@@ -97,7 +97,8 @@
                             <li>Users with ≥1 BINGO: <strong id="statUsersWithBingo">-</strong></li>
                             <li>Total BINGOs: <strong id="statTotalBingos">-</strong></li>
                         </ul>
-                        <div class="d-grid mt-3">
+                        <div class="d-grid mt-3 gap-2">
+                            <button id="toggleMock" class="btn btn-reset">Toggle Mock/Live (global)</button>
                             <button id="refreshAdmin" class="btn btn-sync"><span class="icon">↻</span> Refresh</button>
                         </div>
                     </div>
@@ -114,13 +115,12 @@
                                     <th>User</th>
                                     <th>BINGO Count</th>
                                     <th>Completed Cells</th>
-                                    <th>Notes</th>
                                     <th>Last Synced</th>
                                 </tr>
                             </thead>
                             <tbody id="adminTableBody">
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">Loading...</td>
+                                    <td colspan="4" class="text-center text-muted">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -128,12 +128,13 @@
                 </div>
             </main>
 
-            <!-- Right: Winners Sidebar -->
+            <!-- Right: Notes Viewer Sidebar -->
             <div class="sidebar winners-sidebar">
                 <div class="sidebar-section">
-                    <h2 class="section-title"><span class="icon">👑</span>Top Winners</h2>
-                    <div id="adminWinnersList" class="winners-list">
-                        <div class="no-winners">No winners yet.</div>
+                    <h2 class="section-title"><span class="icon">📝</span>Notes</h2>
+                    <div id="selectedUser" class="mb-2 text-muted"></div>
+                    <div id="notesViewer" class="winners-list">
+                        <div class="no-winners">Select a row to view notes</div>
                     </div>
                 </div>
             </div>
@@ -146,6 +147,27 @@
     <script src="js/services/jsonbin-service.js"></script>
     <script src="js/admin/admin-service.js"></script>
     <script src="js/admin/dashboard.js"></script>
+    <script>
+        // Replace localStorage toggle with global JSONBin toggle persisted in TOGGLES_BIN_ID
+        (function () {
+            const btn = document.getElementById('toggleMock');
+            if (!btn) return;
+            const svc = new JsonBinService();
+            async function render() {
+                const on = await svc.isMockEnabled();
+                btn.textContent = on ? 'Using MOCK (switch to LIVE)' : 'Using LIVE (switch to MOCK)';
+            }
+            async function saveToggle(next) {
+                if (!CONFIG.JSONBIN.TOGGLES_BIN_ID) { alert('Missing TOGGLES_BIN_ID in config'); return; }
+                try {
+                    await svc.fetchWithRetry(`${CONFIG.JSONBIN.BASE_URL}/${CONFIG.JSONBIN.TOGGLES_BIN_ID}`, { method: 'PUT', body: JSON.stringify({ USE_MOCK: next }) });
+                    svc.togglesCache = { USE_MOCK: next };
+                } catch (e) { console.error('Failed to save toggle', e); alert('Failed to save toggle'); }
+            }
+            btn.addEventListener('click', async function () { const on = await svc.isMockEnabled(); await saveToggle(!on); await render(); });
+            render();
+        })();
+    </script>
 </body>
 
 </html>

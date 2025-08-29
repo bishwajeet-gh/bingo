@@ -45,8 +45,13 @@ class BingoGame {
     }
 
     validatePlayer(name) {
+        const trimmed = name.trim();
+        if (!trimmed) return false;
+        if (!Array.isArray(this.authorizedUsers) || this.authorizedUsers.length === 0) {
+            return true;
+        }
         return this.authorizedUsers.some(user =>
-            user.toLowerCase() === name.toLowerCase().trim()
+            (user).toLowerCase() === trimmed.toLowerCase()
         );
     }
 
@@ -111,6 +116,12 @@ class BingoGame {
     setupEventListeners() {
         $('#startGameBtn').on('click', async () => {
             const playerName = $('#playerNameInput').val().trim();
+
+            // Refresh game data and authorized users right before validation
+            try {
+                const latestGameData = await this.jsonBinService.getGameData();
+                this.authorizedUsers = Array.isArray(latestGameData.users) ? latestGameData.users : [];
+            } catch (_) { /* keep existing authorizedUsers on failure */ }
 
             if (this.validatePlayer(playerName)) {
                 this.currentPlayer = playerName;

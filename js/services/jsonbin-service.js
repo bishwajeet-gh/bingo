@@ -42,6 +42,26 @@ class JsonBinService {
             'X-Bin-Meta': 'false',
             'versioning': 'false'
         };
+        this.togglesCache = null;
+    }
+    async getToggles() {
+        if (!CONFIG.JSONBIN.TOGGLES_BIN_ID) return { USE_MOCK: CONFIG.JSONBIN.USE_MOCK };
+        if (this.togglesCache) return this.togglesCache;
+        try {
+            const response = await this.fetchWithRetry(`${this.baseUrl}/${CONFIG.JSONBIN.TOGGLES_BIN_ID}/latest`, { method: 'GET' });
+            const data = await response.json();
+            const record = (data && data.record) ? data.record : data; // handle both shapes
+            this.togglesCache = record || {};
+            return this.togglesCache;
+        } catch (e) {
+            console.warn('Toggles fetch failed, using CONFIG fallback');
+            return { USE_MOCK: CONFIG.JSONBIN.USE_MOCK };
+        }
+    }
+
+    async isMockEnabled() {
+        const toggles = await this.getToggles();
+        return !!toggles.USE_MOCK;
     }
 
     async fetchWithRetry(url, options, attempt = 1) {
@@ -84,7 +104,7 @@ class JsonBinService {
     }
 
     async getWinners() {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             return this.mockWinners;
         }
 
@@ -101,7 +121,7 @@ class JsonBinService {
     }
 
     async getGameData() {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             return this.mockGameData;
         }
 
@@ -118,7 +138,7 @@ class JsonBinService {
     }
 
     async updateWinners(winners) {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             this.mockWinners = winners;
             return;
         }
@@ -135,7 +155,7 @@ class JsonBinService {
     }
 
     async savePlayerProgress(playerName, progress) {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             this.mockProgress[playerName] = progress;
             return true;
         }
@@ -163,7 +183,7 @@ class JsonBinService {
     }
 
     async getPlayerProgress(playerName) {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             return this.mockProgress[playerName] || null;
         }
 
@@ -177,7 +197,7 @@ class JsonBinService {
     }
 
     async getAllProgress() {
-        if (CONFIG.JSONBIN.USE_MOCK) {
+        if (await this.isMockEnabled()) {
             return this.mockProgress;
         }
 

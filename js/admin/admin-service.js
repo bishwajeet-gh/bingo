@@ -5,7 +5,7 @@ class AdminDataService {
 
     async getAllProgress() {
         try {
-            if (CONFIG.JSONBIN.USE_MOCK) {
+            if (await this.jsonBinService.isMockEnabled()) {
                 throw new Error('Admin dashboard requires JSONBin. Set CONFIG.JSONBIN.USE_MOCK = false.');
             }
             return await this.jsonBinService.getAllProgress();

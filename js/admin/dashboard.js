@@ -3,7 +3,7 @@ $(async function () {
 
     async function load() {
         const tableBody = $('#adminTableBody');
-        tableBody.html('<tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>');
+        tableBody.html('<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>');
         try {
             const all = await service.getAllProgress();
             const users = Object.keys(all || {}).sort((a, b) => a.localeCompare(b));
@@ -17,8 +17,9 @@ $(async function () {
             $('#statTotalBingos').text(totalBingos);
 
             if (!users.length) {
-                tableBody.html('<tr><td colspan="5" class="text-center text-muted">No data yet</td></tr>');
-                $('#adminWinnersList').html('<div class="no-winners">No winners yet.</div>');
+                tableBody.html('<tr><td colspan="4" class="text-center text-muted">No data yet</td></tr>');
+                $('#notesViewer').html('<div class="no-winners">Select a row to view notes</div>');
+                $('#selectedUser').text('');
                 return;
             }
 
@@ -27,53 +28,39 @@ $(async function () {
                 const s = all[name] || {};
                 const completed = Array.isArray(s.selectedCells) ? s.selectedCells.length : 0;
                 const notesArr = s.notesByIndex ? Object.entries(s.notesByIndex) : [];
-                const notesHtml = notesArr.length
-                    ? `<div class=\"notes-list\">${notesArr
-                        .map(([idx, text]) => `
-                            <div class=\"note-item\">
-                                <div class=\"small text-muted mb-1\">Cell #${Number(idx) + 1}</div>
-                                <div class=\"note-text\">${$('<div>').text(text).html()}</div>
-                            </div>
-                        `).join('')}
-                    </div>`
-                    : '<span class="text-muted">—</span>';
                 const lastSynced = s.lastSynced ? new Date(s.lastSynced).toLocaleString() : '—';
 
-                tableBody.append(`
+                const row = $(`
                     <tr>
                         <td>${name}</td>
                         <td><span class="badge-soft-primary">${s.bingoCount || 0}</span></td>
                         <td>${completed}</td>
-                        <td class="notes-cell">${notesHtml}</td>
                         <td>${lastSynced}</td>
                     </tr>
                 `);
-            });
-
-            // Build winners list (top by score)
-            const sortedByScore = users
-                .map(u => ({ name: u, score: all[u]?.bingoCount || 0 }))
-                .filter(x => x.score > 0)
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 10);
-
-            const winnersList = $('#adminWinnersList');
-            if (!sortedByScore.length) {
-                winnersList.html('<div class="no-winners">No winners yet.</div>');
-            } else {
-                winnersList.empty();
-                sortedByScore.forEach(w => {
-                    winnersList.append(`
-                        <div class="winner-item">
-                            <span class="winner-name">${w.name}</span>
-                            <span class="winner-score">${w.score} BINGOs</span>
-                        </div>
-                    `);
+                // Click to preview notes on the right panel
+                row.on('click', function () {
+                    $('#selectedUser').text(name);
+                    const list = s.notesByIndex ? Object.entries(s.notesByIndex) : [];
+                    if (!list.length) {
+                        $('#notesViewer').html('<div class="no-winners">No notes for this user</div>');
+                    } else {
+                        const html = list.map(([idx, text]) => `
+                            <div class="note-item mb-2">
+                                <div class="small text-muted mb-1">Cell #${Number(idx) + 1}: ${$('<div>').text((s.tasks && s.tasks[Number(idx)]) || '').html()}</div>
+                                <div class="note-text">${$('<div>').text(text).html()}</div>
+                            </div>
+                        `).join('');
+                        $('#notesViewer').html(html);
+                    }
                 });
-            }
+                tableBody.append(row);
+            });
+            $('#selectedUser').text(users[0]);
+            $('tbody#adminTableBody tr').first().trigger('click');
         } catch (e) {
             console.error('Admin load error:', e);
-            tableBody.html('<tr><td colspan="5" class="text-center text-danger">Failed to load</td></tr>');
+            tableBody.html('<tr><td colspan="4" class="text-center text-danger">Failed to load</td></tr>');
         }
     }
 

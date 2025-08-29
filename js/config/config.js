@@ -5,7 +5,8 @@ const CONFIG = {
         GAME_DATA_BIN_ID: '68b150d7d0ea881f4069f0e3', // Add your game data bin ID
         PROGRESS_BIN_ID: '68b17be3ae596e708fdae2a6', // Add your progress bin ID
         BASE_URL: 'https://api.jsonbin.io/v3/b',
-        USE_MOCK: true, // Toggle between mock data and real API
+        USE_MOCK: false, // Default fallback if toggles bin is unavailable
+        TOGGLES_BIN_ID: '68b1ab2343b1c97be92f527f', // Add your feature toggles bin ID (expects { "USE_MOCK": boolean })
         RETRY: {
             MAX_ATTEMPTS: 3,
             DELAY: 1000, // 1 second between retries
@@ -27,4 +28,16 @@ const CONFIG = {
         CELL_SELECTED_CLASS: 'selected',
         WINNERS_UPDATE_INTERVAL: 120000 // 30 seconds
     }
+};
+
+// Runtime override helper for mock usage (used by services and dashboards)
+window.isMockEnabled = function () {
+    try {
+        const v = localStorage.getItem('USE_MOCK');
+        if (v === 'true') return true;
+        if (v === 'false') return false;
+    } catch (e) {
+        // ignore storage issues
+    }
+    return CONFIG.JSONBIN.USE_MOCK;
 };
