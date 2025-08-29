@@ -5,6 +5,7 @@ class BingoBoard {
         this.tasks = tasks;
         this.selectedCells = new Set();
         this.bingoCount = 0;
+        this.notesByIndex = {}; // { [index]: string }
 
         // Initialize board immediately with default state
         this.initializeBoard(tasks);
@@ -33,6 +34,7 @@ class BingoBoard {
             this.tasks = savedState.tasks;
             this.selectedCells = new Set(savedState.selectedCells);
             this.bingoCount = savedState.bingoCount;
+            this.notesByIndex = savedState.notesByIndex || {};
 
             // Update local storage with the most recent state
             localStorage.setItem(this.storageKey, JSON.stringify(savedState));
@@ -45,6 +47,7 @@ class BingoBoard {
             this.tasks = this.shuffleArray([...tasks]);
             this.selectedCells = new Set();
             this.bingoCount = 0;
+            this.notesByIndex = {};
             await this.saveState();
         }
 
@@ -61,6 +64,7 @@ class BingoBoard {
                 tasks: this.tasks,
                 selectedCells: Array.from(this.selectedCells),
                 bingoCount: this.bingoCount,
+                notesByIndex: this.notesByIndex,
                 lastSynced: new Date().toISOString()
             };
 
@@ -164,6 +168,9 @@ class BingoBoard {
         } else {
             this.selectedCells.add(index);
             cell.addClass(CONFIG.UI.CELL_SELECTED_CLASS);
+            // Prompt notes capture for newly selected cell
+            const title = this.tasks[index] || `Cell ${index + 1}`;
+            $(document).trigger('openNoteForCell', [{ index, title, existing: this.notesByIndex[index] || '' }]);
         }
 
         // Update completion status
@@ -190,6 +197,7 @@ class BingoBoard {
         // Clear all selected cells
         this.selectedCells.clear();
         this.bingoCount = 0;
+        this.notesByIndex = {};
 
         // Re-shuffle tasks for a fresh board
         this.tasks = this.shuffleArray([...this.tasks]);
@@ -203,5 +211,19 @@ class BingoBoard {
 
         // Trigger winners update to reflect the reset
         $(document).trigger('winnersUpdated');
+    }
+
+    setNote(index, text) {
+        if (typeof index !== 'number') return;
+        if (text && text.trim().length > 0) {
+            this.notesByIndex[index] = text.trim();
+        } else {
+            delete this.notesByIndex[index];
+        }
+        this.saveState();
+    }
+
+    getNote(index) {
+        return this.notesByIndex[index] || '';
     }
 }

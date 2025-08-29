@@ -147,6 +147,32 @@ class BingoGame {
             await this.updateWinnersList();
         });
 
+        // Open Note modal when a cell is newly selected
+        $(document).on('openNoteForCell', (_, payload) => {
+            const { index, title, existing } = payload || {};
+            if (typeof index !== 'number') return;
+
+            $('#noteModalLabel').text(title || 'Add Notes');
+            $('#noteText').val(existing || '');
+            $('#saveNoteBtn').data('cell-index', index);
+
+            const modalElement = document.getElementById('noteModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+
+        // Save note from modal to local state
+        $('#saveNoteBtn').on('click', () => {
+            const index = $('#saveNoteBtn').data('cell-index');
+            const text = $('#noteText').val();
+            if (this.bingoBoard && typeof index === 'number') {
+                this.bingoBoard.setNote(index, text);
+            }
+            const modalElement = document.getElementById('noteModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) modal.hide();
+        });
+
         // Listen for winners list updates (triggered after manual sync)
         $(document).on('winnersUpdated', async () => {
             await this.updateWinnersList();
