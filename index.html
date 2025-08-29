@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal for the week Bingo</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Goal for the week Bingo</h1>
+            <p class="welcome-text">Welcome, <span id="currentPlayer">Not logged in</span>!</p>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h2 class="section-title">
+                        <span class="icon">🎮</span>
+                        How to Play
+                    </h2>
+                    <div class="game-rules">
+                        <div class="rules-group">
+                            <ul class="rules-list">
+                                <li>Mark off squares as you complete daily work tasks</li>
+                                <li>Click any square to toggle it on/off when you finish a task</li>
+                                <li>Achieve 5 squares in a row (any direction) to score a BINGO!</li>
+                                <li>You can earn multiple BINGOs on the same board</li>
+                            </ul>
+                        </div>
+
+                        <h3 class="sub-section-title">
+                            <span class="icon">🏆</span>
+                            Winning Patterns
+                        </h3>
+                        <ul class="winning-types">
+                            <li>Any complete row (horizontal) = 1 BINGO</li>
+                            <li>Any complete column (vertical) = 1 BINGO</li>
+                            <li>Either diagonal line = 1 BINGO</li>
+                        </ul>
+
+                        <h3 class="sub-section-title">
+                            <span class="icon">✨</span>
+                            Smart Features
+                        </h3>
+                        <ul class="feature-list">
+                            <li>Progress automatically saves to your device</li>
+                            <li>Sync with cloud to backup your achievements</li>
+                            <li>Real-time leaderboard updates</li>
+                            <li>Reset your board anytime to start fresh</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <main class="main-content">
+                <div id="bingoBoard" class="bingo-board"></div>
+                <div class="board-status">
+                    <span id="completionStatus">1 of 25 squares completed</span>
+                    <div class="board-actions">
+                        <button id="syncProgress" class="btn btn-sync">
+                            <span class="icon">↻</span> Sync Progress
+                        </button>
+                        <button id="resetBoard" class="btn btn-reset">RESET BOARD</button>
+                    </div>
+                </div>
+            </main>
+
+            <div class="sidebar winners-sidebar">
+                <div class="sidebar-section">
+                    <h2 class="section-title">
+                        <span class="icon">👑</span>
+                        Winners
+                    </h2>
+                    <div id="winnersList" class="winners-list">
+                        <div class="no-winners">No winners yet. Be the first!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Login Modal -->
+    <div class="modal fade" id="playerLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="playerLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h2 class="login-title">Welcome to Team Bingo!</h2>
+                    <div class="login-form">
+                        <input type="text" class="form-control" id="playerNameInput" placeholder="Enter your name">
+                        <button type="button" class="btn btn-start" id="startGameBtn">Start Playing</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header error-header">
+                    <div class="modal-title-group">
+                        <h5 class="modal-title" id="errorModalLabel">
+                            <span class="error-icon">⚠️</span>
+                            Access Denied
+                        </h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="error-message">
+                        <p>Sorry, you are not authorized to play this game.</p>
+                        <p class="text-muted">Please contact your team administrator for access.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+                        Got it
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Config -->
+    <script src="js/config/config.js"></script>
+    <!-- Services -->
+    <script src="js/services/jsonbin-service.js"></script>
+    <!-- Components -->
+    <script src="js/components/bingo-board.js"></script>
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
