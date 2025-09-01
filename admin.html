@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #1e293b;
+            --admin-secondary: #334155;
+            --admin-accent: #3b82f6;
+            --admin-success: #10b981;
+            --admin-warning: #f59e0b;
+            --admin-danger: #ef4444;
+            --admin-light: #f8fafc;
+            --admin-border: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        .admin-header h1 {
+            color: var(--admin-primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .admin-header p {
+            color: var(--admin-secondary);
+            font-size: 1.1rem;
+            margin: 0.5rem 0 0 0;
+            opacity: 0.8;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--admin-border);
+        }
+
+        .card-header h3 {
+            color: var(--admin-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-header .icon {
+            font-size: 1.5rem;
+            color: var(--admin-accent);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: var(--admin-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--admin-border);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .form-text {
+            color: var(--admin-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, var(--admin-accent), #2563eb);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            width: 100%;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .btn-admin:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary-admin {
+            background: var(--admin-secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-secondary-admin:hover {
+            background: var(--admin-primary);
+            color: white;
+        }
+
+        .bottom-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: var(--admin-primary);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border-color: var(--admin-border);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .badge-custom {
+            background: linear-gradient(135deg, var(--admin-accent), #2563eb);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--admin-success);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>
+                <i class="fas fa-cogs"></i>
+                Bingo Admin Dashboard
+            </h1>
+            <p>Manage game settings, tasks, and authorized users</p>
+        </header>
+
+        <div class="admin-grid">
+            <!-- Game Configuration Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <i class="fas fa-sliders-h icon"></i>
+                    <h3>Game Configuration</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gridSizeSelect" class="form-label">
+                        <i class="fas fa-th"></i> Grid Size
+                    </label>
+                    <select id="gridSizeSelect" class="form-select">
+                        <option value="3">3×3 Grid</option>
+                        <option value="4">4×4 Grid</option>
+                        <option value="5" selected>5×5 Grid</option>
+                        <option value="6">6×6 Grid</option>
+                        <option value="7">7×7 Grid</option>
+                    </select>
+                    <div class="form-text">Changes apply to new games. Existing boards reset on next load.</div>
+                </div>
+                
+                <button id="saveGridSize" class="btn-admin">
+                    <i class="fas fa-save"></i> Save Grid Size
+                </button>
+                
+                <div class="action-buttons">
+                    <button id="toggleMock" class="btn-secondary-admin">
+                        <i class="fas fa-toggle-on"></i> Toggle Mode
+                    </button>
+                    <button id="refreshAdmin" class="btn-secondary-admin">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Task Management Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <i class="fas fa-tasks icon"></i>
+                    <h3>Bingo Tasks</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tasksTextarea" class="form-label">
+                        <i class="fas fa-list"></i> Task Items
+                    </label>
+                    <textarea id="tasksTextarea" class="form-control" rows="8" 
+                              placeholder="Enter bingo tasks, one per line:
+
+🤝 Helped unblock a teammate
+💡 Shared useful knowledge in standup
+✍️ Improved documentation clarity
+👥 Participated actively in refinement"></textarea>
+                    <div class="form-text">Enter one task per line. Emojis and special characters are supported.</div>
+                </div>
+                
+                <button id="saveTasks" class="btn-admin">
+                    <i class="fas fa-save"></i> Save Tasks
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <!-- User Management Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <i class="fas fa-users icon"></i>
+                    <h3>Authorized Users</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label for="usersTextarea" class="form-label">
+                        <i class="fas fa-user-friends"></i> User Names
+                    </label>
+                    <textarea id="usersTextarea" class="form-control" rows="6" 
+                              placeholder="Enter authorized users, one per line:
+
+John Smith
+Jane Doe
+Mike Johnson
+Sarah Williams"></textarea>
+                    <div class="form-text">Enter one username per line. Names are case-insensitive.</div>
+                </div>
+                
+                <button id="saveUsers" class="btn-admin">
+                    <i class="fas fa-save"></i> Save Users
+                </button>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar icon"></i>
+                    <h3>Quick Stats</h3>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <div class="h2 text-primary" id="totalTasksCount">-</div>
+                        <small class="text-muted">Total Tasks</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="h2 text-success" id="totalUsersCount">-</div>
+                        <small class="text-muted">Authorized Users</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h2 text-info" id="activePlayersCount">-</div>
+                        <small class="text-muted">Active Players</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h2 text-warning" id="totalBingosCount">-</div>
+                        <small class="text-muted">Total Bingos</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Progress Table -->
+        <div class="bottom-section">
+            <div class="card-header">
+                <i class="fas fa-table icon"></i>
+                <h3>Player Progress</h3>
+            </div>
+            
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user"></i> Player</th>
+                            <th><i class="fas fa-trophy"></i> Bingos</th>
+                            <th><i class="fas fa-check-circle"></i> Completed</th>
+                            <th><i class="fas fa-clock"></i> Last Active</th>
+                            <th><i class="fas fa-sticky-note"></i> Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerProgressTable">
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="fas fa-spinner fa-spin"></i> Loading player data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config/config.js"></script>
+    <script src="js/services/jsonbin-service.js"></script>
+    <script src="js/admin/admin-service.js"></script>
+    <script src="js/admin/dashboard.js"></script>
+</body>
+
+</html>
