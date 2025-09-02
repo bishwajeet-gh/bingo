@@ -115,7 +115,6 @@ $(async function () {
                         <td>
                             <span class="badge-custom">${bingoCount}</span>
                         </td>
-                        <td>${completedCells} cells</td>
                         <td>
                             <small class="text-muted">${lastActive}</small>
                         </td>

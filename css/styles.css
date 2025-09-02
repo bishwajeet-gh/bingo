@@ -91,6 +91,9 @@ body {
     line-height: 1.6;
     overflow: hidden; /* Prevent page scrolling */
     position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Animated Background */
@@ -256,6 +259,7 @@ body {
 .app-header {
     background: var(--surface-color);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--surface-hover);
     border-radius: 1rem; /* Reduced from 1.5rem */
     padding: 0.6rem 1.2rem; /* Reduced from 1.5rem 2rem */
@@ -306,7 +310,7 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradient-shift 3s ease infinite;
+    color: transparent;
 }
 
 @keyframes gradient-shift {
@@ -405,6 +409,7 @@ body {
     gap: 0.4rem; /* Reduced from 1.5rem */
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 1.2rem;
     padding: 0.4rem; /* Reduced from 1.5rem */
     box-shadow: var(--shadow-xl);
@@ -420,6 +425,7 @@ body {
     border-radius: 1.2rem;
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     overflow: hidden;
     transition: transform 0.3s ease;
     min-height: 0;
@@ -459,6 +465,7 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .section-title {
@@ -554,6 +561,7 @@ body {
     padding: 0.6rem; /* Increased from 0.4rem */
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -606,6 +614,8 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-md);
+    -webkit-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     font-size: 1.1rem;
     position: relative;
     overflow: hidden;
@@ -614,7 +624,6 @@ body {
 .btn-control:hover {
     transform: translateY(-2px) scale(1.05);
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
 }
 
 .btn-control:active {
@@ -1113,6 +1122,8 @@ body {
     overflow: hidden;
     position: relative;
     box-shadow: var(--shadow-sm); /* Reduced shadow */
+    -webkit-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     color: var(--text-primary);
     min-height: 0;
     backdrop-filter: blur(10px);
@@ -1518,6 +1529,7 @@ body {
     border-radius: 1.5rem;
     box-shadow: var(--shadow-xl);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     overflow: hidden;
 }
 
@@ -1539,6 +1551,7 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .login-title {
@@ -1889,6 +1902,7 @@ body {
     z-index: 1000;
     background: var(--surface-color);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--surface-hover);
     border-radius: 50%;
     width: 60px;
@@ -2378,4 +2392,68 @@ body {
 
 .btn-start .fa-spinner {
     margin-right: 0.5rem;
+}
+
+/* Fallbacks for better browser compatibility */
+
+/* Fallback for browsers without background-clip support */
+@supports not (background-clip: text) {
+    .bingo-text,
+    .login-icon,
+    .section-icon {
+        color: var(--accent-primary);
+        background: none;
+    }
+}
+
+/* Cross-browser backdrop-filter support */
+@supports not (backdrop-filter: blur(1px)) {
+    .app-header {
+        background: rgba(255, 255, 255, 0.85);
+    }
+    
+    .content-wrapper {
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .sidebar {
+        background: var(--bg-secondary);
+        opacity: 0.95;
+    }
+    
+    [data-theme="dark"] .app-header {
+        background: rgba(31, 41, 55, 0.85);
+    }
+    
+    [data-theme="dark"] .content-wrapper {
+        background: rgba(31, 41, 55, 0.9);
+    }
+}
+
+/* CSS Grid fallback for older browsers */
+@supports not (display: grid) {
+    .content-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .sidebar {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .main-content {
+        flex: 2;
+        min-width: 300px;
+    }
+    
+    .bingo-board {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .bingo-cell {
+        width: calc(20% - 0.4rem);
+        margin: 0.2rem;
+    }
 }
